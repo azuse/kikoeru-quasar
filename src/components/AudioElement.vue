@@ -1,7 +1,8 @@
 <template>
   <vue-plyr
     ref="plyr"
-    :emit="['canplay', 'timeupdate', 'ended', 'seeked', 'playing', 'waiting', 'pause']"
+    :emit="['loadedmetadata', 'canplay', 'timeupdate', 'ended', 'seeked', 'playing', 'waiting', 'pause']"
+    @loadedmetadata="resumePlayHistory()"
     @canplay="onCanplay()"
     @timeupdate="onTimeupdate()"
     @ended="onEnded()"
@@ -162,11 +163,6 @@ export default {
     ]),
 
     onCanplay () {
-      // 断点续播
-      if (this.player.currentTime == 0) {
-        this.resumePlayHistory()
-      }
-      
       // 缓冲至可播放状态时触发 (只有缓冲至可播放状态, 才能获取媒体文件的播放时长)
       this.SET_DURATION(this.player.duration)
 
@@ -207,6 +203,7 @@ export default {
     },
 
     onEnded () {
+      console.log("onEnded")
       // 当前文件播放结束时触发
       switch (this.playMode.name) {
         case "all repeat":
@@ -348,10 +345,12 @@ export default {
         if (continueTime == 0) return
         if (this.player.duration <= continueTime) return
   
-        this.player.currentTime = continueTime;
+        this.player.currentTime = parseInt(continueTime);
 
         console.log('set current time to', continueTime)
         console.log('current time is ', this.player.currentTime)
+        console.log(this.player)
+
         function formatSeconds (seconds) {
           let h = Math.floor(seconds / 3600) < 10
             ? '0' + Math.floor(seconds / 3600)
