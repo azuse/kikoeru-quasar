@@ -191,7 +191,7 @@ export default {
       }
 
       // 更新历史记录
-      const UPDATE_INTERVAL = 30
+      const UPDATE_INTERVAL = 1
       if (this.lastHistoryUpdateTime == null) {
         this.lastHistoryUpdateTime = this.player.currentTime
         this.updatePlayHistory(this.player.currentTime, this.player.duration)
